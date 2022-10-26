@@ -5,5 +5,6 @@
 
 ### It has an interface class that gathers the private information for the connection, Properties.java. Remember that both files must be in the same package. This interface allows to change between DBMS. Remember that oracle tables are invoked with <user>.<table>, that's why Properties.java has a String value, RDBMS_NAME, if equals to "Oracle", it means that all queries must have the form <properties.DATABASE_USER>.TABLE when making queries.
 
+### arguments and variables are named in spanish to make them more distinguishable inside the code
 
 
