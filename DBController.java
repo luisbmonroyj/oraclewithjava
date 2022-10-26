@@ -14,17 +14,20 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class DBController {
+    //variables instance
     private static Connection conexion;
+    private static Statement sentencia;
+    
     static boolean conectado;
     static boolean echoON;
-    
-    private static Statement sentencia;
     
     public DBController(boolean echoON){
         this.echoON = echoON;
     }
     
     public static boolean conectar() {
+        //driver initializing
+        //Inicializando driver 
         conectado = false;
         try {
             Class.forName(Properties.DATABASE_DRIVER);
@@ -34,6 +37,8 @@ public class DBController {
             if(echoON)System.out.println(Properties.RDBMS_NAME + " JDBC driver not found.");
             e.printStackTrace();
         }
+        //connecting to database with the stored credentials in Properties.java
+        //conectando a la DB con las credenciales guardadas en Properties.java
         try {
             conexion = DriverManager.getConnection(Properties.DATABASE_URL, Properties.DATABASE_USER, Properties.DATABASE_PASSWORD);
             if(echoON)System.out.println("JDBC driver connected.");
@@ -47,6 +52,8 @@ public class DBController {
         return conectado;
     }
     public static boolean desconectar() {
+        //disconnecting from DB
+        //Desconectarse de la DB
         try {
             if (!conexion.isClosed()){
                 conexion.close();
@@ -55,12 +62,12 @@ public class DBController {
             }
         }
         catch(SQLException e) {
-            if(echoON)System.out.println("Connection to "+Properties.RDBMS_NAME+" Database failed");
+            if(echoON)System.out.println("Closing connection to "+Properties.RDBMS_NAME+" Database failed");
             e.printStackTrace();
         }
         return conectado;
     }
-    
+    //CREATE a single row because it is oracle. For multiple rows in another DBMS, use a loop
     public boolean insertValues(String tabla,String campos,String csv){
         boolean exitoso = false;
         try {
@@ -72,12 +79,12 @@ public class DBController {
         }
         return exitoso;
     }
-    
-    public boolean updateValues(String dbTable,String campo,String valor,String pk, String id){
+    //UPDATE is made by using the pk only
+    public boolean updateValues(String tabla,String campo,String valor,String pk, String id){
         boolean exitoso = false;
         try {
-            if(echoON)System.out.println("updateValues: update "+dbTable+" set "+ campo +"= "+valor+" where " + pk +" = "+id+";");
-            sentencia.execute("update "+dbTable+" set "+ campo +"= "+valor+" where " + pk +" = "+id+";");
+            if(echoON)System.out.println("updateValues: update "+tabla+" set "+ campo +"= "+valor+" where " + pk +" = "+id+";");
+            sentencia.execute("update "+tabla+" set "+ campo +"= "+valor+" where " + pk +" = "+id+";");
             exitoso = true;
         } 
         catch (SQLException e) {
@@ -86,7 +93,7 @@ public class DBController {
         }
         return exitoso;
     }
-    
+    //DELETE "llave" is the PK. if the PK is a String, isString is true, otherwise false
     public boolean deleteValues(String tabla, String llave, String id, boolean isString){
         boolean exitoso = false;
         try {
@@ -103,7 +110,7 @@ public class DBController {
         }
         return exitoso;
     }
-    
+    //looks for a fk being used in another registry, it is useful for warning of a cascade deletion 
     public boolean unusedPrimaryKey(String dbTable, String fk, String pk){
         //busca si un dato que es llave foranea en otra tabla, esta siendo usada en algun otro registro
         //sirve para advertir sobre el borrado en cascada de una FK
@@ -121,7 +128,7 @@ public class DBController {
         if (contador > 0) { return false;}
         else              {  return true;}
     }
-    
+    //READ, this method delivers how many registries are, columna must be a not null value or the PK
     public int getRowCount (String dbTable,String columna){
         //obtiene la cantidad de datos(filas) en la tabla, columna debe ser un dato no nulo o la PK
         int contador = 0;
@@ -138,6 +145,8 @@ public class DBController {
         }
         return contador;
     }
+    //READ, this method delivers how many columns are being read, specially useful when using * (all columns)
+    //it is used to instantiate the tables
     public int getColumnCount(String dbTable, String columnasCSV){
         //obtiene la cantidad de columnas del parametro columnasCSV, especialmente cuando es *
         int salida = 0;
@@ -152,7 +161,7 @@ public class DBController {
         }
         return salida;
     }
-    
+    //READ this method reads data from one column. 
     public String[] getColumnValues(String dbTable,String columna,String orden){
         //Obtiene los datos de una columna, ordenados por el campo que se introduzca en "orden"
         if(echoON)System.out.println("getStringValues: SELECT "+columna+" FROM "+dbTable+" ORDER BY "+orden);    
@@ -163,7 +172,7 @@ public class DBController {
         }
         return datos;
     }
-    
+    //READ this method reads the values of the given columns in a String[] object
     public String[][] getTableValues(String dbTable,String[] columnas,String orden){
         //obtiene los datos de las columnas entregadas como un String[]
         String[][] tabla = new String[getRowCount(dbTable,orden)][columnas.length];
@@ -185,7 +194,7 @@ public class DBController {
         }
         return tabla;
     }
-    
+    //READ this method reads the values of the given columns in a String constructed like a csv. the csv can be "*"
     public String[][] getTableValues(String dbTable,String columnasCSV,String orden){
         //Obtiene los datos de las columnas en formato CSV (comma separated values) ordenadas segun orden
         //ArrayList<ArrayList <String>> tabla = new ArrayList<ArrayList <String>>();            
@@ -207,7 +216,7 @@ public class DBController {
         }
         return tabla;
     }
-    
+    //READ this methods gets one registry, the first that matches the condition in the query
     public String [] getSingleRow(String dbTable,String columnasCSV,String campo, String valor, String orden){
         //obtiene una sola fila (el primer resultado segun orden) de una busqueda
         String salida[] = new String[getColumnCount(dbTable,columnasCSV)];
@@ -222,7 +231,7 @@ public class DBController {
         }
         return salida;
     }
-    
+    //READ this method returns one data from one column according to the condition in the query
     public String getSingleData(String data, String dbTable,String campo, String valor){
         //obtiene un solo valor con el criterio de busqueda WHERE
         String salida = null;
@@ -241,7 +250,7 @@ public class DBController {
         return salida;
     }
     
-    //me da mucha pereza a veces usar la sentencia completa    
+    //me da mucha pereza a veces usar la sentencia completa,     
     public void sout (Object output){
         System.out.println(output.toString());
     }
