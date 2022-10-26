@@ -1,10 +1,9 @@
 # mySQLwithJava
-This class features a connection to a mySQL engine. The constructor has a boolean argument that allows/restricts to print information about connections or queries., similar to a debug routine. 
+##This class features a connection to an Oracle DBMS engine. The constructor has a boolean argument that allows/restricts to print information about connections or queries., similar to a debug routine. 
 
-## This class uses JDK 18 and needs the mysql-connector-java-8.0.29.jar added in the libraries folder.
+### This class uses JDK 18 and needs the ojdbc11.jar added in the libraries folder.
 
-## It has an interface class that gathers the private information for the connection, Properties.java. Remember that both files must be in the same package.
+### It has an interface class that gathers the private information for the connection, Properties.java. Remember that both files must be in the same package. This interface allows to change between DBMS. Remember that oracle tables are invoked with <user>.<table>, that's why Properties.java has a String value, RDBMS_NAME, if equals to "Oracle", it means that all queries must have the form <properties.DATABASE_USER>.TABLE when making queries.
 
-## The class features the methods for a CRUD, some methods require data in the arguments, specially the primary key, because it is a relational database.
 
 
