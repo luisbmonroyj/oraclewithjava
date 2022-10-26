@@ -1,5 +1,6 @@
 # oraclewithjava
-##This class features a connection to an Oracle DBMS engine. The constructor has a boolean argument that allows/restricts to print information about connections or queries., similar to a debug routine. it helps to prove the queries in a database managing tool, like sqldeveloper or similar.
+
+## This class features a connection to an Oracle DBMS engine. The constructor has a boolean argument that allows/restricts to print information about connections or queries., similar to a debug routine. it helps to prove the queries in a database managing tool, like sqldeveloper or similar.
 
 ### This class uses JDK 18 and needs the ojdbc11.jar added in the libraries folder.
 
